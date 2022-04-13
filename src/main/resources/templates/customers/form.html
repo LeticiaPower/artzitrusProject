@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8" />
+    <title>Gestão de Clientes</title>
+
+    <!--/*/ <th:block th:include="defaultHeader.html :: headerfiles"></th:block> /*/-->
+    <script type="text/javascript">
+      $(function() {
+         $("#buscar_cep").click(function(){
+             var cep = $("#cep").val().replace(/\D/g, '');
+             if (cep != "") {
+               var validacep = /^[0-9]{8}$/;
+               if(validacep.test(cep)) {
+                   $.ajax({
+                        type: "GET",
+                        url: "address/search/"+cep,
+                        success: function (dados) {
+                            $("#logradouro").val(dados.logradouro);
+                            $("#bairro").val(dados.bairro);
+                            $("#cidade").val(dados.localidade);
+                            $("#uf").val(dados.uf);
+                        },
+                        error: function (result) {
+                          console.log("CEP não encontrado.");
+                        }
+                    });
+               }
+               else {
+                console.log("Formato de CEP inválido.");
+               }
+             }
+          });
+       });
+    </script>
+
+</head>
+<body>
+<header th:insert="defaultHeader.html :: header"> </header>
+
+<div class="container my-2">
+    <h2>Cadastrar Cliente</h2>
+    <form action="#" th:action="@{/customers/save}" th:object="${customer}" method="POST">
+        <input type="hidden" id="id" th:field="*{id}">
+
+        <span th:if="${#fields.hasErrors('name')}" th:errors="*{name}" class="text-danger"></span>
+        <input type="text" th:field="*{name}" placeholder="Nome" class="form-control mb-4 col-4">
+        <span th:if="${#fields.hasErrors('cpf')}" th:errors="*{cpf}" class="text-danger"></span>
+        <input type="text" th:field="*{cpf}" placeholder="CPF" class="form-control mb-4 col-4">
+        <input type="text" th:field="*{number}" placeholder="Telefone" class="form-control mb-4 col-4">
+        <input type="text" id="cep" th:field="*{address.zipCode}" placeholder="Cep" class="form-control mb-4 col-4">
+        <button type="button" id="buscar_cep">buscar<i class="fa fa-search" ></i></button>
+        <br/><br/>
+        <input type="text" id="uf" th:field="*{address.fu}" placeholder="UF" class="form-control mb-4 col-4" ><br/><br/>
+        <input type="text" id="logradouro" th:field="*{address.logradouro}" placeholder="Logradouro" class="form-control mb-4 col-4" ><br/><br/>
+        <input type="text" id="bairro" th:field="*{address.district}" placeholder="Bairro" class="form-control mb-4 col-4" ><br/><br/>
+        <input type="text" id="cidade" th:field="*{address.city}" placeholder="Cidade" class="form-control mb-4 col-4" ><br/><br/>
+        <input type="text" id="complemento" th:field="*{address.complement}" placeholder="Complemento" class="form-control mb-4 col-4" ><br/><br/>
+
+        <button type="submit" class="btn btn-info col-2">Salvar</button>
+    </form>
+    <hr>
+    <a th:href="@{/customers/index}">Retornar para a lista de clientes</a>
+</div>
+</body>
+</html>
