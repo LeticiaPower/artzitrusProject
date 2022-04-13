@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8" />
+    <title>Gerenciamento de clientes ArtZitrus</title>
+
+    <!--/*/ <th:block th:include="defaultHeader.html :: headerfiles"></th:block> /*/-->
+</head>
+<body>
+
+<header th:insert="defaultHeader.html :: header"> </header>
+
+
+<div class="container my-2">
+    <a th:href="@{/customers/new}" class="btn btn-primary btn-sm mb-3">Cadastrar cliente</a>
+    <h1>Clientes</h1>
+    <table border="1" class="table table-striped table-responsive-md">
+        <thead>
+        <tr>
+            <th>Nome</th>
+            <th>Telefone</th>
+            <th>CPF</th>
+            <th>Ações</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="customer : ${listCustomers}">
+            <td th:text="${customer.name}"></td>
+            <td th:text="${customer.number}"></td>
+            <td th:text="${customer.cpf}"></td>
+            <td>
+                <a th:href="@{/customers/address/{id}(id=${customer.address.id})}" class="btn btn-primary">Detalhes</a>
+                <a th:href="@{/customers/delete/{id}(id=${customer.id})}" class="btn btn-danger">Excluir</a>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+</body>
+</html>
